@@ -14,9 +14,24 @@ function main() {
   const canvas = document.querySelector(".game-canvas");
   const sketcher = new Sketcher(canvas);
 
+  // oscillating particle
+  const accileratingParticle = new GameObject("test-coin", {
+    x: 500,
+    y: 300,
+    width: 50,
+    height: 50,
+    gravity: false,
+  });
+  accileratingParticle.oscillation = true;
+  accileratingParticle.oscillationVelocityMax = 1;
+  accileratingParticle.oscillationAccilertaion = 0.05;
+  accileratingParticle.fill = "red";
+
   const game = new GameObject(MAIN_CHARACTER_OBJ_NAME, {
     x: 60,
     y: 300,
+    width: 50,
+    height: 100,
     gravity: true,
     deleteOnOffscreen: false,
     exceptSpaceAnimation: true,
@@ -31,6 +46,7 @@ function main() {
     collitionVelocityDampingFactor: 0.6,
   });
 
+  sketcher.addItem(2, accileratingParticle);
   sketcher.addItem(2, game);
   sketcher.addItem(2, plate);
   sketcher.fpsIndicator = document.querySelector(".fps-value");

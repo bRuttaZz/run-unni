@@ -12,6 +12,7 @@ import {
 export function gameAnimator(zindex, items) {
   items.forEach((item) => {
     _characterJumpObjectAnimator(zindex, item);
+    _oscillationAnimator(zindex, item);
   });
 }
 
@@ -34,4 +35,34 @@ function _characterJumpObjectAnimator(_zindex, item) {
       CHARACTER_VARS.jumping = false;
     }, 200);
   }
+}
+
+/**
+ * Animator for oscillation motions.
+ * as of now handling only vertical oscillations
+ * set the approprite values for perfect oscillation (prefereably gravity should be zero)
+ * @param {Number} _zindex
+ * @param {GameObject} item
+ */
+function _oscillationAnimator(_zindex, item) {
+  if (
+    !item.oscillation || // boolean
+    !item.oscillationVelocityMax || // maximum oscillation velocity
+    !item.oscillationAccilertaion // oscillation damping accileration
+  )
+    return;
+  if (item._oscillationVelocity == undefined) {
+    item._oscillationVelocity = item.oscillationVelocityMax;
+    item._oscillationDirection = -1;
+  }
+
+  if (item._oscillationVelocity <= -item.oscillationVelocityMax) {
+    item._oscillationDirection = 1;
+  } else if (item._oscillationVelocity >= item.oscillationVelocityMax) {
+    item._oscillationDirection = -1;
+  }
+  item._oscillationVelocity +=
+    item._oscillationDirection * item.oscillationAccilertaion;
+
+  item.yVelocityVector = item._oscillationVelocity;
 }
