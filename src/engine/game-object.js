@@ -60,6 +60,8 @@ export class GameObject {
     // collition and animation handling
     this._newX = 0;
     this._newY = 0;
+    this.isHorizontalCollided = false;
+    this.isVerticalCollided = false;
   }
 
   /**
@@ -120,6 +122,9 @@ export class GameObject {
         if (object.gravity)
           object.yVelocityVector =
             -this.yVelocityVector * object.collitionVelocityDampingFactor;
+
+        this.isHorizontalCollided = true;
+        this.isVerticalCollided = false;
       } else {
         if (this._newX > this.x)
           // object moved to right
@@ -133,7 +138,13 @@ export class GameObject {
         if (object.gravity)
           object.xVelocityVector =
             -this.xVelocityVector * object.collitionVelocityDampingFactor;
+
+        this.isHorizontalCollided = false;
+        this.isVerticalCollided = true;
       }
+    } else {
+      this.isHorizontalCollided = false;
+      this.isVerticalCollided = false;
     }
   }
 

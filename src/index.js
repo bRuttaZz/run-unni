@@ -3,22 +3,22 @@ import { GameObject } from "./engine/game-object.js";
 import { physicsAnimator } from "./engine/animators/physics-animator.js";
 import { spaceAnimator } from "./engine/animators/space-animator.js";
 import { CANVAS_DIMENTIONS } from "./engine/conf.js";
+import { gameAnimator } from "./game/animators.js";
+import {
+  registerSpaceAnimationKeyBinds,
+  registerCharacterJumpKeyBindings,
+} from "./game/keybindings.js";
+import { MAIN_CHARACTER_OBJ_NAME } from "./game/conf.js";
 
 function main() {
   const canvas = document.querySelector(".game-canvas");
   const sketcher = new Sketcher(canvas);
-  // const game1 = new GameObject("test-item", {
-  //   x: 10,
-  //   y: 99,
-  //   gravity: true,
-  //   deleteOnOffscreen: true,
-  // });
 
-  const game = new GameObject("test-item", {
+  const game = new GameObject(MAIN_CHARACTER_OBJ_NAME, {
     x: 60,
     y: 300,
     gravity: true,
-    deleteOnOffscreen: true,
+    deleteOnOffscreen: false,
     exceptSpaceAnimation: true,
   });
   const plate = new GameObject("test-item-plate", {
@@ -31,14 +31,17 @@ function main() {
     collitionVelocityDampingFactor: 0.6,
   });
 
-  sketcher.addItem(1, game);
-  // sketcher.addItem(1, game1);
-  sketcher.addItem(1, plate);
+  sketcher.addItem(2, game);
+  sketcher.addItem(2, plate);
   sketcher.fpsIndicator = document.querySelector(".fps-value");
   sketcher.animator = (zindex, items) => {
+    gameAnimator(zindex, items);
     spaceAnimator(zindex, items);
     physicsAnimator(zindex, items);
   };
+
+  registerSpaceAnimationKeyBinds();
+  registerCharacterJumpKeyBindings();
   sketcher.start();
 }
 

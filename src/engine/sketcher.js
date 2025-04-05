@@ -115,6 +115,7 @@ export class Sketcher {
    * @param {GameObject} item - game item to be drawn
    */
   addItem(zindex, item) {
+    item.zIndex = zindex;
     if (!this._gameItems[zindex]) this._gameItems[zindex] = [];
     this._gameItems[zindex].push(item);
   }
