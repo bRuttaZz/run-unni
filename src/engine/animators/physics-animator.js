@@ -1,5 +1,5 @@
 /**
- * Apply physics
+ * Apply physics (gravity & collision)
  * @param {Number} zindex - zindex of objects
  * @param {Array<GameObject>} items - game objects
  */
@@ -14,6 +14,6 @@ export function physicsAnimator(zindex, items) {
       _toRemove.push(i);
     }
   });
-  if (_toRemove.length) console.debug("items removed from track :", _toRemove);
+  if (_toRemove.length) console.debug("items removed from track :", _toRemove); // TODO: remove this debug message
   _toRemove.forEach((i) => items.splice(i, 1));
 }

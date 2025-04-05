@@ -1,6 +1,7 @@
 import { Sketcher } from "./engine/sketcher.js";
 import { GameObject } from "./engine/game-object.js";
-import { physicsAnimator } from "./engine/physics.js";
+import { physicsAnimator } from "./engine/animators/physics-animator.js";
+import { spaceAnimator } from "./engine/animators/space-animator.js";
 import { CANVAS_DIMENTIONS } from "./engine/conf.js";
 
 function main() {
@@ -14,14 +15,15 @@ function main() {
   // });
 
   const game = new GameObject("test-item", {
-    x: 10,
+    x: 60,
     y: 300,
     gravity: true,
     deleteOnOffscreen: true,
+    exceptSpaceAnimation: true,
   });
   const plate = new GameObject("test-item-plate", {
-    x: 5,
-    y: CANVAS_DIMENTIONS.height - 10,
+    x: 55,
+    y: CANVAS_DIMENTIONS.height - 20,
     width: 110,
     height: 10,
     // gravity: true,
@@ -34,6 +36,7 @@ function main() {
   sketcher.addItem(1, plate);
   sketcher.fpsIndicator = document.querySelector(".fps-value");
   sketcher.animator = (zindex, items) => {
+    spaceAnimator(zindex, items);
     physicsAnimator(zindex, items);
   };
   sketcher.start();

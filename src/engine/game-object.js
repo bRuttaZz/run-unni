@@ -13,6 +13,7 @@ export class GameObject {
    * @param {Boolean} options.gravity - gravity to be applied on the object
    * @param {Boolean} options.deleteOnOffscreen - to delete if object went off-screen
    * @param {Number} options.collitionVelocityDampingFactor - damping factor
+   * @param {Boolean} options.exceptSpaceAnimation - except space animation
    */
   constructor(name, options = {}) {
     const _options = {
@@ -25,6 +26,7 @@ export class GameObject {
       gravity: false,
       deleteOnOffscreen: false,
       collitionVelocityDampingFactor: 1,
+      exceptSpaceAnimation: false,
       ...options,
     };
     this.name = name;
@@ -53,6 +55,8 @@ export class GameObject {
     this.collitionVelocityDampingFactor =
       _options.collitionVelocityDampingFactor;
 
+    this.spaceAnimation = !_options.exceptSpaceAnimation;
+
     // collition and animation handling
     this._newX = 0;
     this._newY = 0;
@@ -77,8 +81,8 @@ export class GameObject {
    * @param {Number} yDisplaceMent - in sketcher units
    */
   applyDisplacement(xDisplaceMent, yDisplaceMent) {
-    this._newX = this.x + xDisplaceMent;
-    this._newY = this.y + yDisplaceMent;
+    this.x += xDisplaceMent;
+    this.y += yDisplaceMent;
   }
 
   /**
