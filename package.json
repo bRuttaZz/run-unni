@@ -1,0 +1,15 @@
+{
+  "name": "superbmario",
+  "version": "1.0.0",
+  "description": "A supermario like clone",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "parcel serve index.html",
+    "build": "parcel build index.html --no-autoinstall --dist-dir build"
+  },
+  "author": "bRuttaZz",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "parcel": "^2.14.4"
+  }
+}
