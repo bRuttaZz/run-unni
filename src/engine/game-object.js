@@ -1,7 +1,8 @@
 import { GRAVITY, CANVAS_DIMENTIONS, ANIMATION_SPEED } from "./conf.js";
 
-export class GameObject {
+export class GameObject extends EventTarget {
   /**
+   * Game Object. (on deleteion will emit 'deleted' event)
    * @param {String} name - name of the object
    * @param {Object} options - additional parameters
    * @param {HTMLImageElement} options.skin - object skin
@@ -14,8 +15,10 @@ export class GameObject {
    * @param {Boolean} options.deleteOnOffscreen - to delete if object went off-screen
    * @param {Number} options.collitionVelocityDampingFactor - damping factor
    * @param {Boolean} options.exceptSpaceAnimation - except space animation
+   * @param {Boolean} options.disappearOnCollision - disappear on collision
    */
   constructor(name, options = {}) {
+    super();
     const _options = {
       skin: null,
       x: 0,
@@ -27,6 +30,7 @@ export class GameObject {
       deleteOnOffscreen: false,
       collitionVelocityDampingFactor: 1,
       exceptSpaceAnimation: false,
+      disappearOnCollision: false,
       ...options,
     };
     this.name = name;
@@ -37,6 +41,7 @@ export class GameObject {
     this.height = _options.height;
     this.fill = "green";
     this.zIndex = _options.zIndex;
+    this.disappearOnCollision = _options.disappearOnCollision;
 
     this.xVelocityVector = 0;
     this.yVelocityVector = 0;
@@ -45,6 +50,8 @@ export class GameObject {
 
     this.offScreen = false;
     this.deleteOnOffscreen = _options.deleteOnOffscreen;
+
+    this.deleted = false;
 
     // anyway this collition not obay natural collition principles
     // (as it might get more complicated), now the try is to mimic that effect
@@ -60,8 +67,10 @@ export class GameObject {
     // collition and animation handling
     this._newX = 0;
     this._newY = 0;
+    // collition status are only valid for primary object (the one calculated first)
     this.isHorizontalCollided = false;
     this.isVerticalCollided = false;
+    this.isCollided = false;
   }
 
   /**
@@ -92,6 +101,7 @@ export class GameObject {
    * @param {GameObject} object - object to be calculate collition with
    */
   calcCollition(object) {
+    if (this.deleted) return;
     if (
       this._newX <= object.x + object.width &&
       this._newX + this.width >= object.x &&
@@ -113,9 +123,10 @@ export class GameObject {
         if (this._newY > this.y)
           // object moved down
           this._newY = object.y - this.height;
-        else
+        else if (this._newY < this.y)
           // object moved up
           this._newY = object.y + object.height;
+        // avoid calculating zero scenario
         if (this.gravity)
           this.yVelocityVector =
             -this.yVelocityVector * object.collitionVelocityDampingFactor;
@@ -125,13 +136,16 @@ export class GameObject {
 
         this.isHorizontalCollided = true;
         this.isVerticalCollided = false;
+        this.isCollided = true;
       } else {
+        // vertical collition
         if (this._newX > this.x)
           // object moved to right
           this._newX = object.x - this.width;
-        else
+        else if (this._newX < this.x)
           // object moved to left
           this._newX = object.x + object.width;
+        // avoid calculating zero scenario
         if (this.gravity)
           this.xVelocityVector =
             -this.xVelocityVector * object.collitionVelocityDampingFactor;
@@ -141,17 +155,18 @@ export class GameObject {
 
         this.isHorizontalCollided = false;
         this.isVerticalCollided = true;
+        this.isCollided = true;
       }
-    } else {
-      this.isHorizontalCollided = false;
-      this.isVerticalCollided = false;
     }
+    if (this.isCollided && object.disappearOnCollision) object.deleted = true;
+    if (this.isCollided && this.disappearOnCollision) this.deleted = true;
   }
 
   /**
    * wrap object animation calculations
    */
   wrap() {
+    if (this.deleted) return false;
     this.x = this._newX;
     this.y = this._newY;
     if (

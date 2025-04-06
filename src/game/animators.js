@@ -30,10 +30,10 @@ function _characterJumpObjectAnimator(_zindex, item) {
     item.yVelocityVector = JUMP_VELOCITY;
     setTimeout(() => {
       if (CHARACTER_VARS.jumping) {
-        item.yVelocityVector += JUMP_VELOCITY / 3;
+        item.yVelocityVector += JUMP_VELOCITY / 2;
       }
       CHARACTER_VARS.jumping = false;
-    }, 200);
+    }, 250);
   }
 }
 
