@@ -17,11 +17,13 @@ export function physicsAnimator(zindex, items) {
     }
     const del = item.wrap();
     if (!del) {
-      _toRemove.push(i);
+      _toRemove.push(item.id);
     }
   });
   if (_toRemove.length) console.debug("items removed from track :", _toRemove); // TODO: remove this debug message
-  _toRemove.forEach((i) =>
-    items.splice(i, 1)[0].dispatchEvent(new Event("deleted")),
-  );
+
+  _toRemove.forEach((id) => {
+    const i = items.findIndex(item => item.id == id);
+    if (i !== -1) items.splice(i, 1)[0].dispatchEvent(new Event("deleted"))
+  })
 }

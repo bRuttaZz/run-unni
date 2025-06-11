@@ -3,28 +3,110 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Some Game</title>
+        <title>Runn Unni</title>
         <link rel="stylesheet" href="assets/style.css" />
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet"
+            crossorigin="anonymous">
         <script
             src="src/index.js"
             type="module"
             mime="text/javascript"
         ></script>
+        <link rel="icon" type="image/png" href="assets/logo.png">
     </head>
     <body>
-        <div class="game-canvas-container">
-            <div class="game-area">
-                <canvas class="game-canvas"></canvas>
-                <div class="canvas-overlay">
-                    <div class="fps-indicator">
-                        fps : <span class="fps-value">0</span>
+        <div class="container justify-center">
+            <div class="body-container">
+                <center>
+                    <div class="justify-center">
+                        <img src="assets/logo.png" width="150px">
                     </div>
-                </div>
-                <div class="game-paddle-container">
-                    <div class="paddle paddle-jump"></div>
-                    <div class="paddle paddle-move"></div>
+                    <p>
+                        Help Unni Run!
+                    </p>
+                </center>
+                <div class="game-canvas-container">
+                    <div class="game-area">
+                        <canvas class="game-canvas"></canvas>
+                        <div class="canvas-overlay indicator-pane d-none">
+                            <div class="lefties">
+                                <div class="indicators-pannel-pause menu-btn">
+                                    <!-- <span class="mdi mdi-pause"></span> -->
+                                    <img class="pause-btn" src="./assets/game/pannel-pause.png">
+                                </div>
+                            </div>
+                            <div class="righties">
+                                <div class="game-indicators">
+                                    <img src="./assets/game/magestic-gem-small.png">
+                                    <span class="gems-value">1000</span>
+                                </div>
+                                <div class="game-indicators">
+                                    <div class="respect-value justify-center">1000</div>
+                                </div>
+                                <div class="game-indicators fps-indicator">
+                                    fps : <span class="fps-value">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="canvas-overlay justify-center">
+                            <div class="canvas-modal justify-center">
+                                <img class="modal-logo" src="assets/logo.png" width="200px">
+                                <div class="head modal-heder d-none scored">dummy header</div>
+                                <div class="modal-body">loading...</div>
+                                <div style="font-size: 50px !important" class="rotate-demo-instruct paddle-jump-instruct justify-center d-none">
+                                    <span class="mdi mdi-phone-rotate-landscape"></span>
+                                </div>
+                                <div class="progress-section modal-progress justify-center">
+                                    <div class="progress-container">
+                                    <div class="loading-progress-bar" id="progressBar"></div>
+                                    </div>
+                                </div>
+                                <div class="btns button-container modal-play-btns d-none">
+                                    <img src="assets/game/btn-restart2.png" class="restart-btn">
+                                    <img src="assets/game/btn-exit2.png" class="exit-btn">
+                                </div>
+                                <div class="justify-center btn modal-close-btn d-none">
+                                    <div class="btn">Close</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="game-paddle-container button-container regular-btn">
+                            <div class="paddle paddle-move"></div>
+                            <div class="paddle paddle-start">
+                                <div class="btns setup-btn d-none">
+                                    <div class="start-btn-div">Start</div>
+                                    <div class="round-loader d-none"></div>
+                                </div>
+                                <div class="btns d-none play-btns">
+                                    <img src="assets/game/btn-play-.png" class="start-btn">
+                                    <img src="assets/game/btn-startover.png" class="start-with-story d-none">
+                                    <img src="assets/game/btn-restart.png" class="restart-btn d-none">
+                                    <img src="assets/game/btn-exit.png" class="exit-btn d-none">
+                                </div>
+                            </div>
+                            <div class="paddle paddle-jump">
+                                <div class="paddle-jump-intstruct d-none">
+                                    <div class="paddle-jump-instruct justify-center">
+                                        <span class="mdi mdi-gesture-tap demo-tap-to-jump d-none"></span>
+                                        <span class="mdi mdi-keyboard-space demo-space-to-jump d-none"></span>
+                                    </div>
+                                    <div class="paddle-jump-instruct-text justify-center demo-tap-to-jump d-none">Tap to jump</div>
+                                    <div class="paddle-jump-instruct-text justify-center demo-space-to-jump d-none">Click space-bar to jump</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </body>
+
+    <footer>
+        <center>
+           ⓒ 2025 <a href="https://devgnair.art">Dev G Nair</a>, <a href="https://brutt.site">Agraj P Das</a>.
+           <br>Source code is licensed under the <a href="https://mit-license.org/">MIT License</a>;
+               artwork and media files are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons CC BY 4.0</a>.
+            <a href="https://github.com/bRuttaZz/run-unni">Detailed License terms</a>
+        </center>
+    </footer>
 </html>

@@ -1,67 +1,38 @@
 // This page gonna be different. Currently spin up a basic game
-
-import { Sketcher } from "./engine/sketcher.js";
-import { GameObject } from "./engine/game-object.js";
-import { physicsAnimator } from "./engine/animators/physics-animator.js";
-import { spaceAnimator } from "./engine/animators/space-animator.js";
-import { gameAnimator } from "./game/animators.js";
+import { DEBUG } from "./game/conf.js"
+import { Game } from "./game.js"
+import { getUIInvocation, bindUIBtns, bindUIBasics, ModalMan } from "./utils/ui.js";
+import { audioEngine } from "./audio-engine/engine.js"
 import {
-  registerSpaceAnimationKeyBinds,
-  registerCharacterJumpKeyBindings,
-} from "./game/keybindings.js";
-import { MAIN_CHARACTER_OBJ_NAME, CHARACTER_ZINDEX } from "./game/conf.js";
-import { Wayfinder } from "./game/wayfinder.js";
+  loadAllAssets,
+  assetStore,
+} from "./utils/asset-man.js";
 
-function main() {
-  const canvas = document.querySelector(".game-canvas");
-  const sketcher = new Sketcher(canvas);
-  const wayfinder = new Wayfinder(sketcher);
+async function main() {
+  bindUIBasics();
 
-  // oscillating particle
-  const accileratingParticle = new GameObject("test-coin", {
-    x: 500,
-    y: 300,
-    width: 50,
-    height: 50,
-    gravity: false,
-    disappearOnCollision: true,
-  });
-  accileratingParticle.oscillation = true;
-  accileratingParticle.oscillationVelocityMax = 1;
-  accileratingParticle.oscillationAccilertaion = 0.05;
-  accileratingParticle.fill = "red";
 
-  const mainCharacter = new GameObject(MAIN_CHARACTER_OBJ_NAME, {
-    x: 60,
-    y: 300,
-    width: 50,
-    height: 100,
-    gravity: true,
-    deleteOnOffscreen: true,
-    exceptSpaceAnimation: true,
-  });
-  mainCharacter.fill = "blue";
-  mainCharacter.addEventListener("deleted", () => {
-    console.log("Game Over");
-    sketcher.stop();
-    alert("Game Over!");
-    self.window.location.reload();
+  try {
+    await loadAllAssets();
+  } catch (e) {
+    // handling error
+    console.error("ERROR loading assets :", e);
+    ModalMan.show(
+      "<center><span class=\"err\">Error loading assets</span>" +
+      "<br>Please <a href=\"#\" onclick=\"location.reload(); return false;\">try again</a></center>",
+      "", { progress: true, logo: true, gameBtns: false })
+    return;
+  }
+
+  const game = new Game();
+  bindUIBtns(game);
+
+  // wait for first ui invocation
+  await getUIInvocation(async () => {
+    await audioEngine.init(assetStore.audio);
+    game.setup()
   });
 
-  sketcher.addItem(CHARACTER_ZINDEX, mainCharacter); // always on top (for better collision calcs)
-  sketcher.addItem(CHARACTER_ZINDEX, accileratingParticle);
-  // sketcher.addItem(CHARACTER_ZINDEX, plate);
-  sketcher.fpsIndicator = document.querySelector(".fps-value");
-  sketcher.animator = (zindex, items) => {
-    wayfinder.animator(zindex, items);
-    gameAnimator(zindex, items);
-    spaceAnimator(zindex, items);
-    physicsAnimator(zindex, items);
-  };
-
-  registerSpaceAnimationKeyBinds();
-  registerCharacterJumpKeyBindings();
-  sketcher.start();
 }
 
 main();

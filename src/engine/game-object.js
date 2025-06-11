@@ -1,4 +1,6 @@
-import { GRAVITY, CANVAS_DIMENTIONS, ANIMATION_SPEED } from "./conf.js";
+import { GRAVITY, CANVAS_DIMENTIONS, ANIMATION_VARS } from "./conf.js";
+
+let globalGameObjectCounter = 0;
 
 export class GameObject extends EventTarget {
   /**
@@ -16,6 +18,11 @@ export class GameObject extends EventTarget {
    * @param {Number} options.collitionVelocityDampingFactor - damping factor
    * @param {Boolean} options.exceptSpaceAnimation - except space animation
    * @param {Boolean} options.disappearOnCollision - disappear on collision
+   * @param {Number} options.leftOffset - left offset to draw skin (in sketcher unit)
+   * @param {Number} options.rightOffset - right offset to draw skin (in sketcher unit)
+   * @param {Number} options.topOffset - top offset to draw skin (in sketcher unit)
+   * @param {Number} options.bottomOffset - bottom offset to draw skin (in sketcher unit)
+   * @param {Boolean} options.preventDelete - prevent collition deleteions
    */
   constructor(name, options = {}) {
     super();
@@ -31,8 +38,14 @@ export class GameObject extends EventTarget {
       collitionVelocityDampingFactor: 1,
       exceptSpaceAnimation: false,
       disappearOnCollision: false,
+      leftOffset: 0,
+      rightOffset: 0,
+      topOffset: 0,
+      bottomOffset: 0,
+      preventDelete: false,
       ...options,
     };
+    this.id = ++globalGameObjectCounter;
     this.name = name;
     this.skin = _options.skin;
     this.x = _options.x;
@@ -42,6 +55,13 @@ export class GameObject extends EventTarget {
     this.fill = "green";
     this.zIndex = _options.zIndex;
     this.disappearOnCollision = _options.disappearOnCollision;
+    this.leftOffset = _options.leftOffset;
+    this.rightOffset = _options.rightOffset;
+    this.topOffset = _options.topOffset;
+    this.bottomOffset = _options.bottomOffset;
+    this.preventDelete = _options.preventDelete;
+
+    this.baseY = 0; // to handle motion with oscillation
 
     this.xVelocityVector = 0;
     this.yVelocityVector = 0;
@@ -71,6 +91,35 @@ export class GameObject extends EventTarget {
     this.isHorizontalCollided = false;
     this.isVerticalCollided = false;
     this.isCollided = false;
+
+    this._spaceAnimationHzntlSpeed = 0;
+    this._spaceAnimationVrtclSpeed = 0;
+  }
+
+  /**
+  * Calculate space animation vectors
+  */
+  calcSpaceAnimVelocity() {
+    const velocities = [];
+    for (const velocity of [
+      ANIMATION_VARS.spaceAnimator.hzntlSpeed,
+      ANIMATION_VARS.spaceAnimator.vrtclSpeed,
+    ])
+      if (typeof velocity === "object") {
+        let lastIndex = null;
+        for (const _indx of Object.keys(velocity).sort()) {
+          lastIndex = _indx;
+          if (this.zIndex <= _indx) {
+            velocities.push(velocity[_indx]);
+            lastIndex = null;
+            break;
+          }
+        }
+        if (lastIndex !== null) velocities.push(velocity[lastIndex]);
+      } else velocities.push(velocity);
+
+    this._spaceAnimationHzntlSpeed = velocities[0]
+    this._spaceAnimationVrtclSpeed = velocities[1]
   }
 
   /**
@@ -79,10 +128,16 @@ export class GameObject extends EventTarget {
    * @param {Boolean} calcY - whether to calc y velocity or not
    */
   calcMotion(calcX = true, calcY = true) {
-    if (calcX) this._newX = this.x + this.xVelocityVector * ANIMATION_SPEED;
+    if (calcX) this._newX = this.x + this.xVelocityVector * ANIMATION_VARS.animationSpeed;
     if (calcY) {
       this.yVelocityVector += this.gravity;
-      this._newY = this.y + this.yVelocityVector * ANIMATION_SPEED;
+      if (this.baseY) {
+        this.y = this.baseY;
+        this._newY = this.baseY + this.yVelocityVector * ANIMATION_VARS.animationSpeed;
+        // console.log(this.baseY, this._newY, this.yVelocityVector);
+      }
+      else
+        this._newY = this.y + this.yVelocityVector * ANIMATION_VARS.animationSpeed;
     }
   }
 
@@ -108,6 +163,16 @@ export class GameObject extends EventTarget {
       this._newY <= object.y + object.height &&
       this._newY + this.height >= object.y
     ) {
+      // this collided with object
+      if (object.disappearOnCollision) {
+        object.deleted = true
+        return
+      }
+      if (this.disappearOnCollision) {
+        this.deleted = true
+        return
+      }
+
       const right_ = Math.max(this._newX + this.width, object.x + object.width);
       const left_ = Math.min(this._newX, object.x);
       const hrzntlIntercept = -(right_ - left_ - this.width - object.width);
@@ -118,61 +183,64 @@ export class GameObject extends EventTarget {
       );
       const up_ = Math.min(this._newY, object.y);
       const vrtclIntercept = -(down_ - up_ - this.height - object.height);
+
       if (hrzntlIntercept > vrtclIntercept) {
         // collition happened horizontally
-        if (this._newY > this.y)
-          // object moved down
-          this._newY = object.y - this.height;
-        else if (this._newY < this.y)
-          // object moved up
+        if (this._newY + this.height > object.y + object.height / 2) {
+          // this under other object
           this._newY = object.y + object.height;
+        } else {
+          // this above other object
+          this._newY = object.y - this.height;
+        }
+
         // avoid calculating zero scenario
         if (this.gravity)
           this.yVelocityVector =
             -this.yVelocityVector * object.collitionVelocityDampingFactor;
         if (object.gravity)
           object.yVelocityVector =
-            -this.yVelocityVector * object.collitionVelocityDampingFactor;
+            -object.yVelocityVector * this.collitionVelocityDampingFactor;
 
         this.isHorizontalCollided = true;
         this.isVerticalCollided = false;
-        this.isCollided = true;
+
       } else {
-        // vertical collition
-        if (this._newX > this.x)
-          // object moved to right
-          this._newX = object.x - this.width;
-        else if (this._newX < this.x)
-          // object moved to left
+        // collision happened vrtically
+        if (this._newX + this.width > object.x + object.width / 2) {
+          // this right to the other object
           this._newX = object.x + object.width;
+        } else {
+          // this left to the other object
+          this._newX = object.x - this.width;
+        }
+
         // avoid calculating zero scenario
         if (this.gravity)
           this.xVelocityVector =
             -this.xVelocityVector * object.collitionVelocityDampingFactor;
         if (object.gravity)
           object.xVelocityVector =
-            -this.xVelocityVector * object.collitionVelocityDampingFactor;
+            -object.xVelocityVector * this.collitionVelocityDampingFactor;
 
         this.isHorizontalCollided = false;
         this.isVerticalCollided = true;
-        this.isCollided = true;
       }
+      this.isCollided = true;
     }
-    if (this.isCollided && object.disappearOnCollision) object.deleted = true;
-    if (this.isCollided && this.disappearOnCollision) this.deleted = true;
   }
 
   /**
    * wrap object animation calculations
    */
   wrap() {
-    if (this.deleted) return false;
+    if (this.deleted && !this.preventDelete) return false;
     this.x = this._newX;
     this.y = this._newY;
     if (
       this.x + this.width < 0 ||
-      this.y + this.height < 0 ||
-      this.x > CANVAS_DIMENTIONS.width ||
+      // this.y + this.height < 0 || // forgive objects going to top (they may come back ;)
+      // this.x > CANVAS_DIMENTIONS.width ||  // forgive objects in the right direction
       this.y > CANVAS_DIMENTIONS.height
     ) {
       this.offScreen = true;

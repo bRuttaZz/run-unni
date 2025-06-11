@@ -18,11 +18,9 @@ export function registerSpaceAnimationKeyBinds() {
   });
   paddle.addEventListener("touchstart", (e) => {
     action(true);
-    e.preventDefault();
   });
   paddle.addEventListener("touchend", (e) => {
     action(false);
-    e.preventDefault();
   });
 }
 
@@ -47,10 +45,17 @@ export function registerCharacterJumpKeyBindings() {
   });
   paddle.addEventListener("touchstart", (e) => {
     action(true);
-    e.preventDefault();
   });
   paddle.addEventListener("touchend", (e) => {
     action(false);
-    e.preventDefault();
   });
+}
+
+export function waitForfirstJump(domElem) {
+  return new Promise(resolve => {
+    if (domElem)
+      domElem.addEventListener("touchstart", resolve, { once: true })
+    else
+      self.window.addEventListener("keydown", (e) => { if (e.key === " ") resolve() }, { once: true })
+  })
 }

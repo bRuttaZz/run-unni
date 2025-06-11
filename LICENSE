@@ -1,0 +1,21 @@
+## 1. Images and Media Files
+
+© 2025. All images and media files in the `assets` directory are licensed under the [Creative Commons CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), unless otherwise specified.
+
+The BGM [Comedy Music (Funny Quirky Cunning Silly Background Intro Theme)](https://pixabay.com/music/happy-childrens-tunes-comedy-music-funny-quirky-cunning-silly-background-intro-theme-274541/) and sound effects (`assets/game/audio/forest-bgm.mp3`, `assets/game/story/transition.mp3`, `assets/game/story/noise.mp3`, and `assets/game/story/shutter.mp3`) were sourced from [Pixabay](https://pixabay.com/) and are used in accordance with the [Pixabay Content License](https://pixabay.com/service/license-summary/).
+
+## Source Code
+The rest of the source code in this repository is licensed under the MIT License.
+
+The MIT License (MIT)
+
+Copyright © 2025 Agraj P Das, Dev G Nair
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+## Attributions
+
+1. BGM: [Comedy Music (Funny Quirky Cunning Silly Background Intro Theme)](https://pixabay.com/music/happy-childrens-tunes-comedy-music-funny-quirky-cunning-silly-background-intro-theme-274541/)
+   Licensed under the [Pixabay Content License](https://pixabay.com/service/license-summary/)
