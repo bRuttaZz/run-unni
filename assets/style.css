@@ -36,16 +36,17 @@ h1 {
 
 body {
     font-family: 'RunnUnniFont';
+    font-size: 0.9rem;
     background-color: var(--greenery);
     color: var(--body-color);
 }
 
 footer {
-    margin-top: 32vh;
+    margin-top: 27vh;
     font-size: 0.8rem;
 }
 
-footer a {
+a {
     text-decoration: none;
     color: #4c66b5;
 }
