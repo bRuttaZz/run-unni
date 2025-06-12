@@ -3,8 +3,10 @@ import { assetStatus } from "./asset-man.js";
 
 
 const details = navigator.userAgent;
-const regexp = /android/i;
-export const isMobileDevice = regexp.test(details); // considering only android as mobile device
+const regexpAndroid = /android/i;
+const regexpMobile = /android|iphone|kindle|ipad/i;
+export const isMobileDevice = regexpMobile.test(details);
+export const isAndroid = regexpAndroid.test(details);
 let wakeLock = null;
 let isPlaying = false;
 
@@ -36,7 +38,7 @@ self.window.addEventListener("resize", async () => {
 function askForScreenRotation() {
   return new Promise((resolve) => {
     const orientation = screen.orientation.type;
-    if (isMobileDevice && orientation.split("-")[0].toLowerCase() == "portrait") {
+    if (isAndroid && orientation.split("-")[0].toLowerCase() == "portrait") {
       // mobile but in portrait mode
       ModalMan.show(
         '<center style="font-size: 0.8rem"> ' +
@@ -93,7 +95,7 @@ export async function getUIInvocation(interactiveCallbacks = async () => { }) {
         const gameArea = document.querySelector(".game-area");
         gameArea.classList.add(".fullscreen-fake");
 
-        if (isMobileDevice) {
+        if (isAndroid) { // request full screen for android
           const type = screen.orientation.type
           if (type.split("-")[0].toLowerCase() != "portrait") {
             // if portrait then switch to full screen!

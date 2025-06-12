@@ -1,6 +1,7 @@
+<img src="assets/logo.png" width="200px" align=right>
+
 # Run Unni
 
-<img src="assets/logo.png" width="250px" align=right>
 
 [![Deploy static content to Pages](https://github.com/bRuttaZz/run-unni/actions/workflows/static-site.yml/badge.svg)](https://github.com/bRuttaZz/run-unni/actions/workflows/static-site.yml)
 
