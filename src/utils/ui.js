@@ -3,9 +3,11 @@ import { assetStatus } from "./asset-man.js";
 
 
 const details = navigator.userAgent;
-const regexp = /android|iphone|kindle|ipad/i;
-export const isMobileDevice = regexp.test(details);
+const regexp = /android/i;
+export const isMobileDevice = regexp.test(details); // considering only android as mobile device
 let wakeLock = null;
+let isPlaying = false;
+
 
 if (!DEBUG) {
   document.querySelector(".fps-indicator").style.display = "none"
@@ -15,6 +17,21 @@ if (isMobileDevice) {
 } else {
   document.querySelectorAll(".demo-space-to-jump").forEach(el => el.classList.remove("d-none"));
 }
+
+// remove inbetween screen size adjustments
+self.window.addEventListener("resize", async () => {
+  const type = screen.orientation.type
+  if (isPlaying) {
+    const setupBtn = document.querySelector(".setup-btn")
+    document.querySelector(".exit-btn").click();
+    setupBtn.classList.add("d-none");
+    await askForScreenRotation();
+    setupBtn.classList.remove("d-none");
+  }
+  if (type.split("-")[0].toLowerCase() === "portrait") {
+    document.exitFullscreen?.().catch(() => { });
+  }
+})
 
 function askForScreenRotation() {
   return new Promise((resolve) => {
@@ -73,12 +90,18 @@ export async function getUIInvocation(interactiveCallbacks = async () => { }) {
       if (setupBtnInAction) return
       setupBtnInAction = true;
       try {
+        const gameArea = document.querySelector(".game-area");
+        gameArea.classList.add(".fullscreen-fake");
+
         if (isMobileDevice) {
           const type = screen.orientation.type
           if (type.split("-")[0].toLowerCase() != "portrait") {
             // if portrait then switch to full screen!
-            const gameArea = document.querySelector(".game-area");
-            await gameArea.requestFullscreen();
+            try {
+              await gameArea.requestFullscreen();
+            } catch {
+              console.warn?.("[FULLSCREEN API] Not supported!");
+            }
           }
         }
 
@@ -149,6 +172,7 @@ export function bindUIBtns(game) {
     startWithStoryBtn.classList.add("d-none");
     paddleJump.style.width = paddleMove.style.width = paddleStart.style.width = "33.33%";
     btnsInAction.pauseBtn = false;
+    isPlaying = true;
   }
   startBtn.forEach(btn => btn.addEventListener("click", startBtnHandler))
   startWithStoryBtn.addEventListener("click", startBtnHandler)
@@ -161,6 +185,7 @@ export function bindUIBtns(game) {
     paddleJump.style.width = paddleMove.style.width = paddleStart.style.width = "33.33%"
     ModalMan.close();
     btnsInAction.pauseBtn = false;
+    isPlaying = true;
   }))
 
   exitBtn.forEach(btn => btn.addEventListener("click", () => {
@@ -183,6 +208,7 @@ export function bindUIBtns(game) {
     paddleJump.style.width = paddleMove.style.width = paddleStart.style.width = "33.33%"
     ModalMan.close();
     btnsInAction.pauseBtn = false;
+    isPlaying = false;
   }))
 
   pauseBtn.addEventListener("click", () => {
@@ -193,6 +219,7 @@ export function bindUIBtns(game) {
     paddleStart.style.width = "80%"
     game.pause();
     fullCover.classList.remove("d-none");
+    isPlaying = true;
   })
 
 }
