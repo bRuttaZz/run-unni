@@ -39,11 +39,20 @@ body {
     font-size: 0.9rem;
     background-color: var(--greenery);
     color: var(--body-color);
+    min-height: 98.5vh;
+    display: flex;
+    flex-direction: column;
 }
 
 footer {
-    margin-top: 27vh;
-    font-size: 0.8rem;
+    margin-top: auto;
+    margin-bottom: 76px;
+    font-size: 10px;
+    /* color: #dedede; */
+}
+
+footer a {
+    color: #6899cc;
 }
 
 a {
@@ -60,7 +69,7 @@ img {
 
 .body-container {
     width: 100%;
-    height: 100%;
+    /* height: 85vh; */
     max-width: 720px;
 }
 
@@ -80,10 +89,10 @@ img {
 }
 
 .game-area {
+    margin-top: 0;
+    margin-bottom: auto;
     position: relative;
-    /* border: 1px solid black; */
     width: 100%;
-    /* height: calc(660px); */
     aspect-ratio: 3/2;
 }
 
@@ -370,4 +379,13 @@ img {
     50% {
         transform: scale(1.2);
     }
+}
+
+.source-code {
+    margin-top: 6px;
+    font-size: 0.8rem;
+}
+
+.source-code a {
+    color: #ffffff5e;
 }

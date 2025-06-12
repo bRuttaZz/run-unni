@@ -5,7 +5,25 @@
 
 [![Deploy static content to Pages](https://github.com/bRuttaZz/run-unni/actions/workflows/static-site.yml/badge.svg)](https://github.com/bRuttaZz/run-unni/actions/workflows/static-site.yml)
 
+[Live Demo](https://brutt.site/run-unni)
 
+Just a 2D game built for the sake of building it, in collaboration with my game artist friend [Dev G](https://devgnair.art)
+
+Zero AI-generated content | Written in vanilla JS (no libs included) | All the images and most of the sound effects used in this repo are in-house ones | copylefted under *CC BY 4.0*
+
+---
+
+## Credits
+- Art work: [Dev G](https://devgnair.art)
+- Game engine and system: [Agraj](https://brutt.site)
+- Sound effects: [Indraja Nambiar](https://in.linkedin.com/in/indrajanambiar) (the evil laugh) and Agraj
+
+## Tooling
+- [ParcelJs](https://parceljs.org/)
+
+## Type face and icons
+- font: [Alphakind](https://github.com/bRuttaZz/run-unni/blob/main/assets/game/fonts/MoreInfo.txt)
+- [Pictogrammers](https://pictogrammers.com/)
 
 # License
 
