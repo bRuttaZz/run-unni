@@ -1,4 +1,4 @@
-import { SKETCHER_UNIT_DIVIDING_FACTOR, CANVAS_DIMENTIONS } from "./conf.js";
+import { SKETCHER_UNIT_DIVIDING_FACTOR, CANVAS_DIMENTIONS, MAX_FPS } from "./conf.js";
 // draw canvas items
 
 export class Sketcher {
@@ -18,6 +18,10 @@ export class Sketcher {
     this.fpsIndicator = null;
     this._drawCallbacks = () => { }; // executed on each canvas draw
     this._animator = () => { };
+
+    this.FPS = MAX_FPS
+    this.frameIntervel = 1000 / MAX_FPS;
+    this._lastRefreshTime = 0;
 
     this.canvasBgImg = canvas.style.backgroundImage
 
@@ -142,9 +146,13 @@ export class Sketcher {
   start() {
     this.canvas.style.backgroundImage = "none"
     this._zIndices = Object.keys(this._gameItems).sort();
-    const _animator = () => {
-      this._drawItems();
+    const _animator = (time) => {
       this._animationFrameKey = requestAnimationFrame(_animator);
+
+      if (time - this._lastRefreshTime < this.frameIntervel)
+        return
+      this._lastRefreshTime = time;
+      this._drawItems();
     };
     _animator();
   }

@@ -4,6 +4,8 @@ export const CANVAS_DIMENTIONS = {
   height: SKETCHER_UNIT_DIVIDING_FACTOR,
 };
 
+export const MAX_FPS = 70;
+
 export const GRAVITY = 2;
 export const BASE_ANIMATION_SPEED = 0.6 // between 0 and 1
 
